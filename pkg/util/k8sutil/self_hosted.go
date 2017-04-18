@@ -22,8 +22,8 @@ import (
 
 	"github.com/coreos/etcd-operator/pkg/spec"
 
-	"k8s.io/client-go/pkg/api/meta/metatypes"
 	"k8s.io/client-go/pkg/api/v1"
+	metav1 "k8s.io/kubernetes/pkg/apis/meta/v1"
 )
 
 const (
@@ -65,7 +65,7 @@ func PodWithAddMemberInitContainer(p *v1.Pod, endpoints []string, name string, p
 	return p
 }
 
-func NewSelfHostedEtcdPod(name string, initialCluster []string, clusterName, ns, state, token string, cs spec.ClusterSpec, owner metatypes.OwnerReference) *v1.Pod {
+func NewSelfHostedEtcdPod(name string, initialCluster []string, clusterName, ns, state, token string, cs spec.ClusterSpec, owner metav1.OwnerReference) *v1.Pod {
 	selfHostedDataDir := path.Join(etcdVolumeMountDir, ns+"-"+name)
 	commands := fmt.Sprintf("/usr/local/bin/etcd --data-dir=%s --name=%s --initial-advertise-peer-urls=http://$(MY_POD_IP):2380 "+
 		"--listen-peer-urls=http://$(MY_POD_IP):2380 --listen-client-urls=http://$(MY_POD_IP):2379 --advertise-client-urls=http://$(MY_POD_IP):2379 "+

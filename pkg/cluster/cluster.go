@@ -31,7 +31,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/pborman/uuid"
 	"k8s.io/client-go/kubernetes"
-	apierrors "k8s.io/client-go/pkg/api/errors"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/pkg/api/v1"
 )
 

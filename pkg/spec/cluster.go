@@ -21,9 +21,9 @@ import (
 	"strings"
 	"time"
 
-	"k8s.io/client-go/pkg/api/meta/metatypes"
 	"k8s.io/client-go/pkg/api/unversioned"
 	"k8s.io/client-go/pkg/api/v1"
+	metav1 "k8s.io/kubernetes/pkg/apis/meta/v1"
 )
 
 const (
@@ -51,11 +51,9 @@ type Cluster struct {
 	Status               ClusterStatus `json:"status"`
 }
 
-func (c *Cluster) AsOwner() metatypes.OwnerReference {
+func (c *Cluster) AsOwner() metav1.OwnerReference {
 	trueVar := true
-	// TODO: In 1.6 this is gonna be "k8s.io/kubernetes/pkg/apis/meta/v1"
-	// Both api.OwnerReference and metatypes.OwnerReference are combined into that.
-	return metatypes.OwnerReference{
+	return metav1.OwnerReference{
 		APIVersion: c.APIVersion,
 		Kind:       c.Kind,
 		Name:       c.Metadata.Name,

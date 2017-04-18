@@ -53,10 +53,10 @@ import (
 	"reflect"
 	"time"
 
-	"k8s.io/client-go/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/pkg/api/unversioned"
-	"k8s.io/client-go/pkg/util/runtime"
-	"k8s.io/client-go/pkg/util/wait"
+	"k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
 
 	rl "github.com/coreos/etcd-operator/pkg/util/k8sutil/election/resourcelock"
 	"github.com/golang/glog"

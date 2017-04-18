@@ -28,18 +28,18 @@ import (
 	"github.com/coreos/etcd-operator/pkg/util/etcdutil"
 	"github.com/coreos/etcd-operator/pkg/util/retryutil"
 
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/meta"
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/pkg/api"
-	apierrors "k8s.io/client-go/pkg/api/errors"
-	"k8s.io/client-go/pkg/api/meta"
-	"k8s.io/client-go/pkg/api/meta/metatypes"
 	"k8s.io/client-go/pkg/api/unversioned"
 	"k8s.io/client-go/pkg/api/v1"
-	"k8s.io/client-go/pkg/labels"
-	"k8s.io/client-go/pkg/runtime"
-	"k8s.io/client-go/pkg/runtime/serializer"
-	"k8s.io/client-go/pkg/util/intstr"
 	"k8s.io/client-go/rest"
+	metav1 "k8s.io/kubernetes/pkg/apis/meta/v1"
 )
 
 const (
@@ -121,7 +121,7 @@ func BackupServiceName(clusterName string) string {
 	return fmt.Sprintf("%s-backup-sidecar", clusterName)
 }
 
-func CreateClientService(kubecli kubernetes.Interface, clusterName, ns string, owner metatypes.OwnerReference) error {
+func CreateClientService(kubecli kubernetes.Interface, clusterName, ns string, owner metav1.OwnerReference) error {
 	return createService(kubecli, ClientServiceName(clusterName), clusterName, ns, "", 2379, owner)
 }
 
@@ -129,11 +129,11 @@ func ClientServiceName(clusterName string) string {
 	return clusterName + "-client"
 }
 
-func CreatePeerService(kubecli kubernetes.Interface, clusterName, ns string, owner metatypes.OwnerReference) error {
+func CreatePeerService(kubecli kubernetes.Interface, clusterName, ns string, owner metav1.OwnerReference) error {
 	return createService(kubecli, clusterName, clusterName, ns, v1.ClusterIPNone, 2380, owner)
 }
 
-func createService(kubecli kubernetes.Interface, svcName, clusterName, ns, clusterIP string, port int32, owner metatypes.OwnerReference) error {
+func createService(kubecli kubernetes.Interface, svcName, clusterName, ns, clusterIP string, port int32, owner metav1.OwnerReference) error {
 	svc := newEtcdServiceManifest(svcName, clusterName, clusterIP, port)
 	addOwnerRefToObject(svc.GetObjectMeta(), owner)
 	_, err := kubecli.CoreV1().Services(ns).Create(svc)
@@ -199,11 +199,11 @@ func AddRecoveryToPod(pod *v1.Pod, clusterName, token string, m *etcdutil.Member
 		makeRestoreInitContainerSpec(BackupServiceAddr(clusterName), token, cs.Version, m)
 }
 
-func addOwnerRefToObject(o meta.Object, r metatypes.OwnerReference) {
+func addOwnerRefToObject(o meta.Object, r metav1.OwnerReference) {
 	o.SetOwnerReferences(append(o.GetOwnerReferences(), r))
 }
 
-func NewEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state, token string, cs spec.ClusterSpec, owner metatypes.OwnerReference) *v1.Pod {
+func NewEtcdPod(m *etcdutil.Member, initialCluster []string, clusterName, state, token string, cs spec.ClusterSpec, owner metav1.OwnerReference) *v1.Pod {
 	commands := fmt.Sprintf("/usr/local/bin/etcd --data-dir=%s --name=%s --initial-advertise-peer-urls=%s "+
 		"--listen-peer-urls=%s --listen-client-urls=http://0.0.0.0:2379 --advertise-client-urls=%s "+
 		"--initial-cluster=%s --initial-cluster-state=%s",

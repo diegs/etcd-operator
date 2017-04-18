@@ -22,7 +22,7 @@ import (
 	"golang.org/x/time/rate"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/pkg/api/v1"
-	"k8s.io/client-go/pkg/labels"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
 // Monkeys knows how to crush pods and nodes.

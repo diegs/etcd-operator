@@ -34,9 +34,9 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/coreos/etcd/clientv3"
-	"k8s.io/client-go/pkg/api/unversioned"
+	"k8s.io/apimachinery/pkg/apis/meta"
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/pkg/api/v1"
-	"k8s.io/client-go/pkg/labels"
 )
 
 const (
@@ -161,7 +161,7 @@ func killMembers(f *framework.Framework, names ...string) error {
 
 func newClusterSpec(genName string, size int) *spec.Cluster {
 	return &spec.Cluster{
-		TypeMeta: unversioned.TypeMeta{
+		TypeMeta: meta.TypeMeta{
 			Kind:       strings.Title(spec.TPRKind),
 			APIVersion: spec.TPRGroup + "/" + spec.TPRVersion,
 		},

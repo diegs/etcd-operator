@@ -26,14 +26,14 @@ import (
 	"github.com/coreos/etcd-operator/pkg/util/constants"
 	"github.com/coreos/etcd-operator/pkg/util/retryutil"
 
+	"k8s.io/apimachinery/pkg/api/resource"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/pkg/api/meta/metatypes"
-	"k8s.io/client-go/pkg/api/resource"
 	"k8s.io/client-go/pkg/api/unversioned"
 	"k8s.io/client-go/pkg/api/v1"
 	v1beta1extensions "k8s.io/client-go/pkg/apis/extensions/v1beta1"
 	v1beta1storage "k8s.io/client-go/pkg/apis/storage/v1beta1"
-	"k8s.io/client-go/pkg/util/intstr"
+	metav1 "k8s.io/kubernetes/pkg/apis/meta/v1"
 )
 
 const (
@@ -211,7 +211,7 @@ func backupNameAndLabel(clusterName string) (string, map[string]string) {
 	return name, labels
 }
 
-func NewBackupReplicaSetManifest(clusterName string, ps v1.PodSpec, owner metatypes.OwnerReference) *v1beta1extensions.ReplicaSet {
+func NewBackupReplicaSetManifest(clusterName string, ps v1.PodSpec, owner metav1.OwnerReference) *v1beta1extensions.ReplicaSet {
 	name, labels := backupNameAndLabel(clusterName)
 	rs := &v1beta1extensions.ReplicaSet{
 		ObjectMeta: v1.ObjectMeta{
@@ -232,7 +232,7 @@ func NewBackupReplicaSetManifest(clusterName string, ps v1.PodSpec, owner metaty
 	return rs
 }
 
-func NewBackupServiceManifest(clusterName string, owner metatypes.OwnerReference) *v1.Service {
+func NewBackupServiceManifest(clusterName string, owner metav1.OwnerReference) *v1.Service {
 	name, labels := backupNameAndLabel(clusterName)
 	svc := &v1.Service{
 		ObjectMeta: v1.ObjectMeta{
